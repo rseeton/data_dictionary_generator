@@ -1,6 +1,8 @@
 # data_dictionary_generator
 Python script to read a data file and generate data details
 
+A _Data Dictionary_ is a "centralized repository of information about data such as meaning, relationships to other data, origin, usage, and format" (IBM Dictionary of Computing).
+
 Automated inspection of a random file cannot reliably generalize about the set of files that may follow, nor can it definitively determine relationships to other data.  However, based on the data in the file, we can determine some absolute attributes of the data provide and make some educated guess as well.
 
 This package is intended to read in a data file (delimited text, spreadsheets, etc) and then generate a report on the file specifications.
