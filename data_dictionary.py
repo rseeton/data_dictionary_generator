@@ -5,30 +5,39 @@
 #create new pandas  https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
 
 
-import pandas as pd 
-
+import pandas as pd
 import argparse
+
 parser = argparse.ArgumentParser(description='Generate Datasource Layout from file')
 parser.add_argument('filename', type=str, help='Input dir to be parsed')
-parser.add_argument('delim',  type=str, nargs='?', default=',', help="File Delimiter [comma|semi-colon|tab|pipe] defaults to comma")
+parser.add_argument('delim',  type=str, nargs='?', default=',', help="File Delimiter [comma|semi-colon|tab|pipe|xls] defaults to comma")
 parser.add_argument('header', type=int, nargs='?', default='0', help="Number of header record rows (assumes first row represents column headers")
 args = parser.parse_args()
 print(args.filename)
 
 
 if args.delim == '' or args.delim == ',':
-    data = pd.read_csv(args.filename, delimiter=',', header=args.header) 
+    data = pd.read_csv(args.filename, delimiter=',', header=args.header)
 elif args.delim == 'tab':
     data = pd.read_csv(args.filename, delimiter='\t', header=args.header)
 elif args.delim =='semi-colon':
     data = pd.read_csv(args.filename, delimiter=';', header=args.header)
-elif args.delim == 'pipe':
+elif args.delim == 'pipe'
+    data = pd.read_csv(args.filename, delimiter='|', header=args.header)
+elif args.delim == 'xls'
+    excel_data=True
+    with pd.ExcelFile(args.filename) as xls:
+        print(xls.sheet_names)
+        data = {}
+        for x in xls.sheet_names:
+            data[x] = pd.read_excel(xls, x, index_col=None, na_values=['NA'])
+    exit()
     data = pd.read_csv(args.filename, delimiter='|', header=args.header)
 else:
     print ("Delimiter not recognized")
     exit()
 
-# Preview the first 5 lines of the loaded data 
+# Preview the first 5 lines of the loaded data
 print (data.head())
 types = data.dtypes
 default_value=''
@@ -36,7 +45,7 @@ allow_defaults=False
 a = []
 for column_name, v in types.items():
     allow_nulls = True
-    
+
     print('index: ', column_name, 'value: ', v)
     if v == 'float64':
         data_type='FLOAT'
@@ -46,7 +55,7 @@ for column_name, v in types.items():
         data_type='VARCHAR'
     else:
         data_type='VARCHAR'
- 
+
     #If indicator column then default to 'N'
     if column_name[-4:].upper() == '_IND' or column_name[-4:].upper() == 'FLAG' :
         allow_defaults = True
@@ -59,8 +68,8 @@ for column_name, v in types.items():
     print('Unique: ',data[column_name].unique())
     print('Max :', data[column_name].max())
     print('Min :', data[column_name].min())
-    
- 
+
+
 layout_data = pd.DataFrame(a)
 
 #Create layout dataframe
