@@ -25,7 +25,7 @@ def check_boolean_column(v):
     v = [str(x).upper() for x in v if not isNaN(x)]
     v.sort(reverse=True)
     for pair in boolean_pairs_list:
-      print('BOOLEAN check: {} vs {} '.format(v,pair))
+      #print('BOOLEAN check: {} vs {} '.format(v,pair))
       if v == pair:
         return(True)
   return(False)
